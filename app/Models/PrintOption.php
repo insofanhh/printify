@@ -12,10 +12,16 @@ class PrintOption extends Model
     use HasFactory;
 
     protected $fillable = [
+        'uuid',
         'name',
         'sides',
+        'color',
         'description',
         'is_active',
+    ];
+
+    protected $casts = [
+        'is_active' => 'boolean',
     ];
 
     protected static function boot()

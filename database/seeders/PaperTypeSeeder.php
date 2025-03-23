@@ -16,38 +16,23 @@ class PaperTypeSeeder extends Seeder
         $paperTypes = [
             [
                 'name' => 'Giấy A4 thường',
-                'description' => 'Khổ giấy A4 (210x297mm), định lượng 80gsm',
+                'description' => 'Giấy in thông thường khổ A4, 70gsm',
                 'is_active' => true,
-                'price' => 500, // Giá mỗi tờ (VND)
             ],
             [
-                'name' => 'Giấy A4 cao cấp',
-                'description' => 'Khổ giấy A4 (210x297mm), định lượng 100gsm',
+                'name' => 'Giấy A4 xịn double A',
+                'description' => 'Giấy in cao cấp khổ A4, 100gsm',
                 'is_active' => true,
-                'price' => 1000,
             ],
             [
-                'name' => 'Giấy A3 thường',
-                'description' => 'Khổ giấy A3 (297x420mm), định lượng 80gsm',
+                'name' => 'Giấy C160',
+                'description' => 'Giấy in thường khổ C160',
                 'is_active' => true,
-                'price' => 1500,
-            ],
-            [
-                'name' => 'Giấy A3 cao cấp',
-                'description' => 'Khổ giấy A3 (297x420mm), định lượng 100gsm',
-                'is_active' => true,
-                'price' => 2000,
-            ],
-            [
-                'name' => 'Giấy photo màu',
-                'description' => 'Khổ giấy A4 (210x297mm), định lượng 100gsm, dành cho in màu',
-                'is_active' => true,
-                'price' => 2500,
             ],
         ];
 
-        foreach ($paperTypes as $paperType) {
-            PaperType::create($paperType);
+        foreach ($paperTypes as $type) {
+            PaperType::create($type);
         }
     }
 }

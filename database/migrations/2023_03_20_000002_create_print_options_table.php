@@ -11,14 +11,20 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('paper_types', function (Blueprint $table) {
+        Schema::create('print_options', function (Blueprint $table) {
             $table->id();
             $table->uuid('uuid')->unique();
             $table->string('name');
+            $table->enum('sides', ['one_sided', 'two_sided']);
+            $table->enum('color', ['black_white', 'color'])->default('black_white');
             $table->text('description')->nullable();
             $table->boolean('is_active')->default(true);
-            $table->decimal('price', 10, 2)->default(0);
             $table->timestamps();
+            
+            // Xóa cột price nếu đã tồn tại
+            if (Schema::hasColumn('print_options', 'price')) {
+                $table->dropColumn('price');
+            }
         });
     }
 
@@ -27,6 +33,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('paper_types');
+        Schema::dropIfExists('print_options');
     }
-};
+}; 

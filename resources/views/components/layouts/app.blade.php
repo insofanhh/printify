@@ -17,27 +17,11 @@
     
     <!-- Livewire Styles -->
     @livewireStyles
+    
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="font-sans antialiased bg-gray-100">
-    <header class="bg-white shadow">
-        <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-            <h1 class="text-2xl font-bold text-gray-900">
-                <a href="/" class="hover:text-blue-600">Printify</a>
-            </h1>
-        </div>
-    </header>
-
-    <main>
-        {{ $slot }}
-    </main>
-
-    <footer class="bg-white shadow mt-8 py-6">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <p class="text-center text-gray-500 text-sm">
-                &copy; {{ date('Y') }} Printify. Tất cả các quyền được bảo lưu.
-            </p>
-        </div>
-    </footer>
+<body class="bg-gray-100 min-h-screen">
+    {{ $slot }}
 
     <!-- Livewire Scripts -->
     @livewireScripts

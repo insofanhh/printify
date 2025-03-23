@@ -34,7 +34,7 @@ class PriceRuleResource extends Resource
                     ->options(PrintOption::query()->pluck('name', 'id'))
                     ->required()
                     ->searchable(),
-                Forms\Components\TextInput::make('base_price')
+                Forms\Components\TextInput::make('price_per_page')
                     ->label('Giá cơ bản')
                     ->required()
                     ->numeric()
@@ -62,7 +62,7 @@ class PriceRuleResource extends Resource
                     ->label('Tùy chọn in')
                     ->sortable()
                     ->searchable(),
-                Tables\Columns\TextColumn::make('base_price')
+                Tables\Columns\TextColumn::make('price_per_page')
                     ->label('Giá cơ bản')
                     ->money('VND')
                     ->sortable(),

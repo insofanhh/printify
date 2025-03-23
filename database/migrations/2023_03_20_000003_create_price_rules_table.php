@@ -16,10 +16,14 @@ return new class extends Migration
             $table->uuid('uuid')->unique();
             $table->foreignId('paper_type_id')->constrained()->onDelete('cascade');
             $table->foreignId('print_option_id')->constrained()->onDelete('cascade');
-            $table->decimal('base_price', 10, 2);
+            $table->decimal('price_per_page', 10, 2);
             $table->integer('min_quantity')->default(1);
             $table->integer('max_quantity')->nullable();
+            $table->boolean('is_active')->default(true);
             $table->timestamps();
+            
+            // Sử dụng tên ngắn hơn cho index
+            $table->index(['paper_type_id', 'print_option_id'], 'price_rule_lookup_index');
         });
     }
 
@@ -30,4 +34,4 @@ return new class extends Migration
     {
         Schema::dropIfExists('price_rules');
     }
-};
+}; 

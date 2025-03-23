@@ -9,7 +9,9 @@ use App\Models\OrderStatus;
 use App\Models\PaperType;
 use App\Models\PrintOption;
 use App\Models\User;
+use App\Services\FilePageCounter;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Livewire\Component;
@@ -27,9 +29,12 @@ class OrderForm extends Component
     
     // Order details
     public $files = [];
+    public $filePages = []; // Lưu số trang của từng file
+    public $fileTotalPages = 0; // Tổng số trang của tất cả các file
     public $paper_type_id;
     public $print_option_id;
-    public $quantity = 1;
+    public $copies = 1; // Số bản in (số lượng bản sao)
+    public $quantity = 1; // Tổng số trang cần in (= số trang * số bản)
     public $special_instructions;
     public $pickup_method = 'store';
     public $delivery_address;
@@ -40,6 +45,9 @@ class OrderForm extends Component
     // Fetched data
     public $paperTypes = [];
     public $printOptions = [];
+    
+    public $showDeliveryModal = false;
+    public $isProcessingFiles = false;
     
     protected $listeners = ['calculatePrice'];
     
@@ -74,12 +82,22 @@ class OrderForm extends Component
     {
         $this->total_price = 0;
 
+        // Tính toán số trang dựa trên số trang thực tế và số bản in
+        $this->quantity = $this->fileTotalPages * $this->copies;
+
         if ($this->paper_type_id && $this->print_option_id && $this->quantity > 0) {
-            $paperType = \App\Models\PaperType::find($this->paper_type_id);
-            $printOption = \App\Models\PrintOption::find($this->print_option_id);
+            $priceRule = \App\Models\PriceRule::findPriceRule(
+                $this->paper_type_id,
+                $this->print_option_id,
+                $this->quantity
+            );
             
-            if ($paperType && $printOption) {
-                $this->total_price = ($paperType->price + $printOption->price) * $this->quantity;
+            if ($priceRule) {
+                $this->total_price = $priceRule->price_per_page * $this->quantity;
+            } else {
+                // Nếu không tìm thấy quy tắc giá, hiển thị thông báo hoặc sử dụng giá mặc định
+                session()->flash('warning', 'Không tìm thấy quy tắc giá cho tùy chọn in này. Vui lòng liên hệ quản trị viên.');
+                $this->total_price = 0;
             }
         }
     }
@@ -94,16 +112,76 @@ class OrderForm extends Component
         $this->calculatePrice();
     }
     
-    public function updatedQuantity()
+    public function updatedCopies()
     {
+        $this->calculatePrice();
+    }
+    
+    public function updatedFiles()
+    {
+        $this->processUploadedFiles();
+    }
+    
+    /**
+     * Xử lý các file được tải lên để đếm số trang
+     */
+    public function processUploadedFiles()
+    {
+        $this->isProcessingFiles = true;
+        $this->filePages = [];
+        $this->fileTotalPages = 0;
+        
+        $pageCounter = new FilePageCounter();
+        
+        foreach ($this->files as $index => $file) {
+            try {
+                // Lưu file tạm để đếm số trang
+                $tempPath = $file->getRealPath();
+                
+                // Đếm số trang
+                $pageCount = $pageCounter->count($tempPath);
+                
+                // Lưu số trang của file vào mảng
+                $this->filePages[$index] = [
+                    'name' => $file->getClientOriginalName(),
+                    'pages' => $pageCount
+                ];
+                
+                // Cập nhật tổng số trang
+                $this->fileTotalPages += $pageCount;
+                
+            } catch (\Exception $e) {
+                Log::error('Lỗi khi đếm số trang: ' . $e->getMessage(), [
+                    'file' => $file->getClientOriginalName()
+                ]);
+                
+                // Nếu có lỗi, mặc định là 1 trang
+                $this->filePages[$index] = [
+                    'name' => $file->getClientOriginalName(),
+                    'pages' => 1
+                ];
+                $this->fileTotalPages += 1;
+            }
+        }
+        
+        $this->isProcessingFiles = false;
         $this->calculatePrice();
     }
     
     public function removeFile($index)
     {
         if (isset($this->files[$index])) {
+            // Giảm tổng số trang khi xóa file
+            if (isset($this->filePages[$index])) {
+                $this->fileTotalPages -= $this->filePages[$index]['pages'];
+                unset($this->filePages[$index]);
+            }
+            
             unset($this->files[$index]);
             $this->files = array_values($this->files); // Reindex array
+            $this->filePages = array_values($this->filePages); // Reindex array
+            
+            $this->calculatePrice();
         }
     }
     
@@ -115,10 +193,10 @@ class OrderForm extends Component
             'phone' => 'required|string|max:20',
             'address' => 'nullable|string|max:255',
             'files' => 'required|array|min:1',
-            'files.*' => 'file|max:10240|mimes:pdf,doc,docx,jpg,jpeg,png',
+            'files.*' => 'file|max:51200|mimes:pdf,doc,docx,jpg,jpeg,png',
             'paper_type_id' => 'required|exists:paper_types,id',
             'print_option_id' => 'required|exists:print_options,id',
-            'quantity' => 'required|integer|min:1',
+            'copies' => 'required|integer|min:1',
             'special_instructions' => 'nullable|string',
             'pickup_method' => 'required|in:store,delivery',
         ];
@@ -156,36 +234,77 @@ class OrderForm extends Component
             'delivery_address' => $this->pickup_method === 'delivery' ? $this->delivery_address : null,
         ]);
         
+        $pageCounter = new FilePageCounter();
+        $successFiles = [];
+        $errorFiles = [];
+        
         // Process uploaded files
-        foreach ($this->files as $file) {
-            $filePath = $file->store('order_files', 'public');
-            $fileName = $file->getClientOriginalName();
-            $fileSize = $file->getSize();
-            $fileType = $file->getMimeType();
-            
-            // Create order item for each file
-            $orderItem = \App\Models\OrderItem::create([
-                'order_id' => $order->id,
-                'paper_type_id' => $this->paper_type_id,
-                'print_option_id' => $this->print_option_id,
-                'quantity' => $this->quantity,
-                'price' => $this->total_price,
-            ]);
-            
-            // Store file information
-            \App\Models\File::create([
-                'order_item_id' => $orderItem->id,
-                'path' => $filePath,
-                'name' => $fileName,
-                'size' => $fileSize,
-                'type' => $fileType,
-            ]);
+        foreach ($this->files as $index => $file) {
+            try {
+                // Lấy thông tin file
+                $originalName = $file->getClientOriginalName();
+                $extension = $file->getClientOriginalExtension();
+                $size = $file->getSize();
+                $mimeType = $file->getMimeType();
+                
+                // Tạo tên file an toàn
+                $safeFileName = Str::slug(pathinfo($originalName, PATHINFO_FILENAME)) . '_' . time() . '.' . $extension;
+                
+                // Lưu file vào storage
+                $filePath = 'order_files/' . $safeFileName;
+                Storage::disk('public')->putFileAs('order_files', $file, $safeFileName);
+                
+                // Đếm số trang
+                $pageCount = isset($this->filePages[$index]) ? $this->filePages[$index]['pages'] : $pageCounter->count($file->getRealPath());
+                
+                // Create order item for each file
+                $orderItem = \App\Models\OrderItem::create([
+                    'order_id' => $order->id,
+                    'paper_type_id' => $this->paper_type_id,
+                    'print_option_id' => $this->print_option_id,
+                    'quantity' => $pageCount * $this->copies, // Số trang * số bản in
+                    'price' => $this->total_price,
+                    'copies' => $this->copies, // Lưu số bản in
+                ]);
+                
+                // Store file information
+                \App\Models\File::create([
+                    'order_item_id' => $orderItem->id,
+                    'path' => $filePath,
+                    'name' => $originalName,
+                    'size' => $size,
+                    'type' => $mimeType,
+                    'pages' => $pageCount, // Lưu số trang của file
+                ]);
+                
+                $successFiles[] = $originalName;
+                
+            } catch (\Exception $e) {
+                Log::error('Lỗi khi xử lý file: ' . $e->getMessage(), [
+                    'file' => $file->getClientOriginalName(),
+                    'exception' => $e
+                ]);
+                
+                $errorFiles[] = $file->getClientOriginalName();
+            }
+        }
+        
+        // Nếu không có file nào xử lý thành công, xóa đơn hàng
+        if (empty($successFiles)) {
+            $order->delete();
+            session()->flash('error', 'Đã xảy ra lỗi khi xử lý các file của bạn. Vui lòng thử lại.');
+            return;
+        }
+        
+        // Hiển thị thông báo lỗi nếu có file không xử lý được
+        if (!empty($errorFiles)) {
+            session()->flash('warning', 'Một số file không thể xử lý: ' . implode(', ', $errorFiles));
         }
         
         // Reset form
-        $this->reset(['name', 'email', 'phone', 'address', 'files', 'paper_type_id', 
-            'print_option_id', 'quantity', 'special_instructions', 'pickup_method', 
-            'delivery_address']);
+        $this->reset(['name', 'email', 'phone', 'address', 'files', 'filePages', 'fileTotalPages', 
+            'paper_type_id', 'print_option_id', 'copies', 'quantity', 'special_instructions', 
+            'pickup_method', 'delivery_address']);
         $this->total_price = 0;
         
         session()->flash('message', 'Đơn hàng của bạn đã được gửi thành công!');
@@ -197,5 +316,15 @@ class OrderForm extends Component
             'paperTypes' => \App\Models\PaperType::all(),
             'printOptions' => \App\Models\PrintOption::all(),
         ])->layout('components.layouts.app');
+    }
+
+    public function showDeliveryForm()
+    {
+        $this->showDeliveryModal = true;
+    }
+
+    public function hideDeliveryForm()
+    {
+        $this->showDeliveryModal = false;
     }
 }

@@ -50,6 +50,7 @@ class DatabaseSeeder extends Seeder
             OrderStatusSeeder::class,
             PaperTypeSeeder::class,
             PrintOptionSeeder::class,
+            PriceRuleSeeder::class,
         ]);
     }
 }

@@ -15,44 +15,37 @@ class PrintOptionSeeder extends Seeder
     {
         $printOptions = [
             [
-                'name' => 'In trắng đen một mặt',
+                'name' => 'Đen trắng một mặt',
                 'sides' => 'one_sided',
-                'description' => 'In một mặt với mực đen',
+                'color' => 'black_white',
+                'description' => 'In đen trắng một mặt',
                 'is_active' => true,
-                'price' => 1000, // Giá mỗi tờ (VND)
             ],
             [
-                'name' => 'In trắng đen hai mặt',
+                'name' => 'Đen trắng hai mặt',
                 'sides' => 'two_sided',
-                'description' => 'In hai mặt với mực đen',
+                'color' => 'black_white',
+                'description' => 'In đen trắng hai mặt',
                 'is_active' => true,
-                'price' => 1800,
             ],
             [
-                'name' => 'In màu một mặt',
+                'name' => 'Màu một mặt',
                 'sides' => 'one_sided',
-                'description' => 'In một mặt với mực màu',
+                'color' => 'color',
+                'description' => 'In màu một mặt',
                 'is_active' => true,
-                'price' => 3000,
             ],
             [
-                'name' => 'In màu hai mặt',
+                'name' => 'Màu hai mặt',
                 'sides' => 'two_sided',
-                'description' => 'In hai mặt với mực màu',
+                'color' => 'color',
+                'description' => 'In màu hai mặt',
                 'is_active' => true,
-                'price' => 5500,
-            ],
-            [
-                'name' => 'In chất lượng cao',
-                'sides' => 'one_sided',
-                'description' => 'In một mặt với chất lượng cao, phù hợp với ảnh và đồ họa',
-                'is_active' => true,
-                'price' => 8000,
             ],
         ];
 
-        foreach ($printOptions as $printOption) {
-            PrintOption::create($printOption);
+        foreach ($printOptions as $option) {
+            PrintOption::create($option);
         }
     }
 }
