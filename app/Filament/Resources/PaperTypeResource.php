@@ -20,6 +20,7 @@ class PaperTypeResource extends Resource
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
     protected static ?string $navigationGroup = 'Quản lý Sản phẩm';
+    protected static ?string $navigationLabel = 'Loại giấy';
 
     public static function form(Form $form): Form
     {

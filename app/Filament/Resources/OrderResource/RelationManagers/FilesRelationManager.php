@@ -16,7 +16,7 @@ class FilesRelationManager extends RelationManager
     protected static string $relationship = 'files';
 
     protected static ?string $recordTitleAttribute = 'name';
-    
+
     protected static ?string $title = 'Files cần in';
 
     public function form(Form $form): Form
@@ -130,8 +130,18 @@ class FilesRelationManager extends RelationManager
                     ->modalDescription('Xác nhận file này đã được in xong?')
                     ->modalSubmitActionLabel('Xác nhận')
                     ->action(function ($record) {
-                        $record->update(['is_processed' => true]);
-                        $record->orderItem->update(['status' => 'completed']);
+                        try {
+                            // Cập nhật trạng thái file
+                            $record->update(['is_processed' => true]);
+                            
+                            // Kiểm tra orderItem tồn tại trước khi cập nhật
+                            if ($record->orderItem) {
+                                $record->orderItem->update(['status' => 'completed']);
+                            }
+                        } catch (\Exception $e) {
+                            // Ghi log lỗi
+                            \Illuminate\Support\Facades\Log::error('Lỗi khi đánh dấu file đã in: ' . $e->getMessage());
+                        }
                     })
                     ->visible(fn ($record) => !$record->is_processed),
                 Tables\Actions\EditAction::make(),
@@ -144,22 +154,33 @@ class FilesRelationManager extends RelationManager
                     ->requiresConfirmation()
                     ->action(function ($records) {
                         foreach ($records as $record) {
-                            $record->update(['is_processed' => true]);
-                            $record->orderItem->update(['status' => 'completed']);
+                            try {
+                                // Cập nhật trạng thái file
+                                $record->update(['is_processed' => true]);
+                                
+                                // Kiểm tra orderItem tồn tại trước khi cập nhật
+                                if ($record->orderItem) {
+                                    $record->orderItem->update(['status' => 'completed']);
+                                }
+                            } catch (\Exception $e) {
+                                // Ghi log lỗi
+                                \Illuminate\Support\Facades\Log::error('Lỗi khi đánh dấu nhiều file đã in: ' . $e->getMessage());
+                                continue;
+                            }
                         }
                     }),
             ]);
     }
-    
+
     private function formatBytes($bytes, $precision = 2) {
         $units = ['B', 'KB', 'MB', 'GB', 'TB'];
-        
+
         $bytes = max($bytes, 0);
         $pow = floor(($bytes ? log($bytes) : 0) / log(1024));
         $pow = min($pow, count($units) - 1);
-        
+
         $bytes /= (1 << (10 * $pow));
-        
+
         return round($bytes, $precision) . ' ' . $units[$pow];
     }
-} 
+}

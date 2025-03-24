@@ -17,6 +17,9 @@ class UsersResource extends Resource
 {
     protected static ?string $model = User::class;
 
+    protected static ?string $navigationGroup = 'Quản lý người dùng';
+    protected static ?string $navigationLabel = 'Người dùng';
+
     protected static ?string $navigationIcon = 'heroicon-o-user-group';
 
     public static function form(Form $form): Form
@@ -47,8 +50,9 @@ class UsersResource extends Resource
                 ->minLength('8')
                 ->dehydrated(false),
         ])->columns(2),
-                    Forms\Components\TextInput::make('information')->label('Information')->nullable()->json(),
-                    Forms\Components\Toggle::make('is_verified')->label('Verified')->default(false),
+                    Forms\Components\TextInput::make('phone')->label('Phone')->nullable(),
+                    Forms\Components\TextInput::make('address')->label('Address')->nullable(),
+                    Forms\Components\Toggle::make('is_guest')->label('Verified')->default(false),
                     Forms\Components\FileUpload::make('avatar_path')->label('Avatar')->image()->disk('public')->nullable(),
                     Forms\Components\Select::make('roles')
                         ->relationship('roles', 'name')
@@ -65,9 +69,10 @@ class UsersResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('name')->label('Name')->sortable()->searchable(),
                 Tables\Columns\TextColumn::make('email')->label('Email')->sortable()->searchable(),
-                Tables\Columns\TextColumn::make('information')->label('Information')->formatStateUsing(fn ($state) => json_encode($state)),
+                Tables\Columns\TextColumn::make('phone')->label('Phone'),
+                Tables\Columns\TextColumn::make('address')->label('Address'),
                 Tables\Columns\ImageColumn::make('avatar_path')->label('Avatar')->circular(),
-                Tables\Columns\IconColumn::make('is_verified')->label('Verified')->boolean(),
+                Tables\Columns\IconColumn::make('is_guest')->label('Verified')->boolean(),
                 Tables\Columns\TextColumn::make('roles.name')->label('Roles')->formatStateUsing(fn($state): string => str()->headline($state)),
             ])
             ->filters([

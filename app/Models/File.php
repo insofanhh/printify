@@ -14,6 +14,7 @@ class File extends Model
 
     protected $fillable = [
         'order_item_id',
+        'user_id',
         'name',
         'path',
         'type',
@@ -40,9 +41,15 @@ class File extends Model
         });
     }
 
+
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
+    }
+
     public function orderItem(): BelongsTo
     {
-        return $this->belongsTo(OrderItem::class);
+        return $this->belongsTo(OrderItem::class, 'order_item_id');
     }
 
     public function getUrlAttribute(): string

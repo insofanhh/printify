@@ -14,6 +14,7 @@ return new class extends Migration
         if (!Schema::hasTable('files')) {
             Schema::create('files', function (Blueprint $table) {
                 $table->id();
+                $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
                 $table->foreignId('order_item_id')->constrained('order_items')->onDelete('cascade');
                 $table->string('path');
                 $table->string('name');
