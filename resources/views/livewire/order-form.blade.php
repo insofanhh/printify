@@ -26,24 +26,11 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                         <label class="block text-sm font-medium text-gray-700">Họ và tên <span class="text-red-500">*</span></label>
-                        <input type="text" wire:model="name" class="mt-1 block w-full border border-gray-300 rounded-md p-2 focus:ring-blue-500 focus:border-blue-500" placeholder="Nhập họ và tên">
+                        <input type="text" wire:model="name" class="mt-1 block w-full border border-gray-300 rounded-md p-2 focus:ring-blue-500 focus:border-blue-500" placeholder="Nhập tên của bạn">
                         @error('name') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
                     </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700">Email <span class="text-red-500">*</span></label>
-                        <input type="email" wire:model="email" class="mt-1 block w-full border border-gray-300 rounded-md p-2 focus:ring-blue-500 focus:border-blue-500" placeholder="Nhập email">
-                        @error('email') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700">Số điện thoại <span class="text-red-500">*</span></label>
-                        <input type="tel" wire:model="phone" class="mt-1 block w-full border border-gray-300 rounded-md p-2 focus:ring-blue-500 focus:border-blue-500" placeholder="Nhập số điện thoại">
-                        @error('phone') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700">Địa chỉ</label>
-                        <input type="text" wire:model="address" class="mt-1 block w-full border border-gray-300 rounded-md p-2 focus:ring-blue-500 focus:border-blue-500" placeholder="Nhập địa chỉ">
-                    </div>
                 </div>
+                <p class="text-sm text-gray-500 mt-4 italic">Lưu ý: Nếu bạn chọn giao hàng tận nơi, bạn sẽ cần cung cấp đầy đủ thông tin liên hệ.</p>
             </div>
 
             <!-- File in -->
@@ -86,7 +73,7 @@
                                 </div>
                             @endforeach
                         </div>
-                        
+
                         @if($fileTotalPages > 0)
                             <div class="mt-3 p-3 bg-blue-50 rounded border border-blue-200">
                                 <p class="text-sm text-blue-700">
@@ -184,6 +171,21 @@
             <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
                 <div class="bg-white p-6 rounded-lg shadow-lg max-w-md w-full">
                     <h3 class="text-lg font-bold mb-4">Thông tin giao hàng</h3>
+
+                    <!-- Thông tin liên hệ cho giao hàng -->
+                    <div class="space-y-4 mb-6">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Email <span class="text-red-500">*</span></label>
+                            <input type="email" wire:model="email" class="mt-1 block w-full border border-gray-300 rounded-md p-2 focus:ring-blue-500 focus:border-blue-500" placeholder="Nhập email của bạn">
+                            @error('email') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Số điện thoại <span class="text-red-500">*</span></label>
+                            <input type="tel" wire:model="phone" class="mt-1 block w-full border border-gray-300 rounded-md p-2 focus:ring-blue-500 focus:border-blue-500" placeholder="Nhập số điện thoại">
+                            @error('phone') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
+                        </div>
+                    </div>
+
                     <div class="mb-4">
                         <label class="block text-sm font-medium text-gray-700">Địa chỉ giao hàng <span class="text-red-500">*</span></label>
                         <textarea wire:model="delivery_address" class="mt-1 block w-full border border-gray-300 rounded-md p-2 focus:ring-blue-500 focus:border-blue-500" rows="3" placeholder="Nhập địa chỉ giao hàng"></textarea>

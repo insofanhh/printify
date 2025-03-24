@@ -10,6 +10,16 @@ class EditPrintOption extends EditRecord
 {
     protected static string $resource = PrintOptionResource::class;
 
+    protected function getRedirectUrl():string
+    {
+        return $this->getResource()::getUrl('index');
+    }
+
+    protected function getSavedNotificationTitle(): ?string
+    {
+        return 'Print option updated!';
+    }
+
     protected function getHeaderActions(): array
     {
         return [

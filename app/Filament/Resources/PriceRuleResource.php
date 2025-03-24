@@ -19,6 +19,7 @@ class PriceRuleResource extends Resource
     protected static ?string $navigationIcon = 'heroicon-o-currency-dollar';
 
     protected static ?string $navigationGroup = 'Quản lý Sản phẩm';
+    protected static ?string $navigationLabel = 'Quy tắc giá';
 
     public static function form(Form $form): Form
     {

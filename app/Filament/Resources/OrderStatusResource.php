@@ -20,6 +20,7 @@ class OrderStatusResource extends Resource
     protected static ?string $navigationIcon = 'heroicon-o-tag';
 
     protected static ?string $navigationGroup = 'Quản lý Đơn hàng';
+    protected static ?string $navigationLabel = 'Trạng thái';
 
     public static function form(Form $form): Form
     {

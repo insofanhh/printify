@@ -19,9 +19,9 @@ class OrderResource extends Resource
     protected static ?string $model = Order::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-shopping-bag';
-    
+
     protected static ?string $navigationLabel = 'Đơn Hàng';
-    
+
     protected static ?int $navigationSort = 1;
 
     public static function form(Form $form): Form
@@ -44,7 +44,7 @@ class OrderResource extends Resource
                             ->options(OrderStatus::pluck('name', 'id'))
                             ->required(),
                     ])->columns(3),
-                
+
                 Forms\Components\Section::make('Chi tiết đơn hàng')
                     ->schema([
                         Forms\Components\TextInput::make('total_amount')

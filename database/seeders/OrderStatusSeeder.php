@@ -15,27 +15,27 @@ class OrderStatusSeeder extends Seeder
     {
         $statuses = [
             [
-                'name' => 'Đang chờ',
+                'name' => 'Pending',
                 'description' => 'Đơn hàng đang chờ xử lý',
                 'color' => 'blue',
             ],
             [
-                'name' => 'Đang xử lý',
+                'name' => 'Processing',
                 'description' => 'Đơn hàng đang được xử lý',
                 'color' => 'yellow',
             ],
             [
-                'name' => 'Sẵn sàng',
+                'name' => 'Ready',
                 'description' => 'Đơn hàng đã sẵn sàng để lấy',
                 'color' => 'green',
             ],
             [
-                'name' => 'Hoàn thành',
+                'name' => 'Completed',
                 'description' => 'Đơn hàng đã hoàn thành',
                 'color' => 'green',
             ],
             [
-                'name' => 'Hủy bỏ',
+                'name' => 'Cancelled',
                 'description' => 'Đơn hàng đã bị hủy',
                 'color' => 'red',
             ],

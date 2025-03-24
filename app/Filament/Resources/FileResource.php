@@ -25,30 +25,31 @@ class FileResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('original_name')
+                Forms\Components\TextInput::make('name')
                     ->label('Tên file gốc')
                     ->required()
                     ->maxLength(255),
-                Forms\Components\TextInput::make('uploaded_by')
+                Forms\Components\Select::make('user_id')
+                    ->relationship('user', 'name')
                     ->label('Người tải lên')
-                    ->required()
-                    ->maxLength(255),
+                    ->searchable()
+                    ->preload()
+                    ->required(),
                 Forms\Components\TextInput::make('disk_name')
                     ->label('Tên file trên ổ đĩa')
-                    ->required()
                     ->maxLength(255),
-                Forms\Components\TextInput::make('file_path')
+                Forms\Components\TextInput::make('path')
                     ->label('Đường dẫn file')
                     ->required()
                     ->maxLength(255),
-                Forms\Components\TextInput::make('file_size')
+                Forms\Components\TextInput::make('size')
                     ->label('Kích thước file (bytes)')
                     ->required()
                     ->numeric(),
-                Forms\Components\TextInput::make('file_type')
+                Forms\Components\TextInput::make('type')
                     ->label('Loại file')
                     ->required()
-                    ->maxLength(50),
+                    ->maxLength(500),
             ]);
     }
 
@@ -59,7 +60,7 @@ class FileResource extends Resource
                 Tables\Columns\TextColumn::make('name')
                     ->label('Tên file gốc')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('uploaded_by')
+                Tables\Columns\TextColumn::make('user.name')
                     ->label('Người tải lên')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('type')

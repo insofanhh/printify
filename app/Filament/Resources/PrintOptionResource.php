@@ -20,6 +20,7 @@ class PrintOptionResource extends Resource
     protected static ?string $navigationIcon = 'heroicon-o-cog';
 
     protected static ?string $navigationGroup = 'Quản lý Sản phẩm';
+    protected static ?string $navigationLabel = 'Tùy chọn in';
 
     public static function form(Form $form): Form
     {

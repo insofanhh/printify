@@ -6,6 +6,7 @@ use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
+use Filament\Tables\Actions\Action;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -15,7 +16,7 @@ class OrderItemsRelationManager extends RelationManager
     protected static string $relationship = 'orderItems';
 
     protected static ?string $recordTitleAttribute = 'id';
-    
+
     protected static ?string $title = 'Các mục đơn hàng';
 
     public function form(Form $form): Form
@@ -43,9 +44,6 @@ class OrderItemsRelationManager extends RelationManager
                             ->numeric()
                             ->label('Giá')
                             ->suffix('VND'),
-                        Forms\Components\Textarea::make('notes')
-                            ->label('Ghi chú')
-                            ->columnSpanFull(),
                     ])->columns(2),
             ]);
     }
@@ -95,7 +93,6 @@ class OrderItemsRelationManager extends RelationManager
                     ->action(function ($record) {
                         // Xử lý khi cần
                     }),
-                Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
@@ -104,4 +101,4 @@ class OrderItemsRelationManager extends RelationManager
                 ]),
             ]);
     }
-} 
+}
