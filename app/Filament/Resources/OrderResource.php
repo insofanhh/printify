@@ -59,7 +59,7 @@ class OrderResource extends Resource
                                 'delivery' => 'Giao hàng tận nơi',
                             ])
                             ->required(),
-                        Forms\Components\Textarea::make('delivery_address')
+                        Forms\Components\Textarea::make('address')
                             ->label('Địa chỉ giao hàng')
                             ->visible(fn (callable $get) => $get('pickup_method') === 'delivery')
                             ->columnSpanFull(),

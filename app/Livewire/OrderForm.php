@@ -202,7 +202,7 @@ class OrderForm extends Component
         ];
 
         if ($this->pickup_method === 'delivery') {
-            $rules['delivery_address'] = 'nullable|string|max:255';
+            $rules['address'] = 'required|string|max:255';
             $rules['email'] = 'required|email|max:255';
             $rules['phone'] = 'required|string|max:20';
         }
@@ -352,24 +352,24 @@ class OrderForm extends Component
 
     /**
      * Lấy ID trạng thái mặc định cho đơn hàng mới
-     * 
+     *
      * @return int ID của trạng thái đơn hàng mặc định
      */
     protected function getDefaultOrderStatusId(): int
     {
         // Thử tìm trạng thái "Đang chờ" (tiếng Việt)
         $pendingStatus = \App\Models\OrderStatus::where('name', 'Đang chờ')->first();
-        
+
         // Nếu không tìm thấy, thử tìm trạng thái "Pending" (tiếng Anh)
         if (!$pendingStatus) {
             $pendingStatus = \App\Models\OrderStatus::where('name', 'Pending')->first();
         }
-        
+
         // Nếu vẫn không tìm thấy, lấy trạng thái đầu tiên trong cơ sở dữ liệu
         if (!$pendingStatus) {
             $pendingStatus = \App\Models\OrderStatus::first();
         }
-        
+
         // Nếu không có trạng thái nào trong cơ sở dữ liệu, tạo một trạng thái mới
         if (!$pendingStatus) {
             $pendingStatus = \App\Models\OrderStatus::create([
@@ -378,7 +378,7 @@ class OrderForm extends Component
                 'color' => 'blue',
             ]);
         }
-        
+
         return $pendingStatus->id;
     }
 }

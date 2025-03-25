@@ -188,7 +188,7 @@
 
                     <div class="mb-4">
                         <label class="block text-sm font-medium text-gray-700">Địa chỉ giao hàng <span class="text-red-500">*</span></label>
-                        <textarea wire:model="delivery_address" class="mt-1 block w-full border border-gray-300 rounded-md p-2 focus:ring-blue-500 focus:border-blue-500" rows="3" placeholder="Nhập địa chỉ giao hàng"></textarea>
+                        <textarea wire:model="address" class="mt-1 block w-full border border-gray-300 rounded-md p-2 focus:ring-blue-500 focus:border-blue-500" rows="3" placeholder="Nhập địa chỉ giao hàng"></textarea>
                         @error('delivery_address') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
                     </div>
                     <div class="flex justify-end space-x-2">
