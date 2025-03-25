@@ -1,0 +1,19 @@
+/node_modules
+/.git
+/storage/*.key
+/vendor
+.env
+.env.backup
+.env.production
+.phpunit.result.cache
+docker-compose.yml
+phpunit.xml
+README.md
+/storage/logs
+/tests
+
+# Đảm bảo không bỏ qua các thư mục quan trọng
+!/public
+!/public/build
+!/public/build/manifest.json
+!/api 
