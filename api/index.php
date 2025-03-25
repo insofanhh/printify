@@ -1,10 +1,22 @@
 <?php
 
+// Đảm bảo đường dẫn cho Laravel bootstrap trên Vercel
+
+// Kiểm tra xem đang ở trên Vercel hay không
+$isVercel = isset($_ENV['VERCEL']) || isset($_SERVER['VERCEL']) || isset($_ENV['VERCEL_REGION']);
+
+// Sửa REQUEST_URI cho Vercel
+if ($isVercel) {
+    $_SERVER['SCRIPT_NAME'] = '/api/index.php';
+}
+
 // Load composer autoloader
 require __DIR__ . '/../vendor/autoload.php';
 
-// Lấy đường dẫn thực đến thư mục public
-$publicPath = __DIR__ . '/../public';
+// Đảm bảo có .env file
+if (!file_exists(__DIR__ . '/../.env')) {
+    copy(__DIR__ . '/../.env.example.vercel', __DIR__ . '/../.env');
+}
 
 // Khởi tạo application
 $app = require_once __DIR__ . '/../bootstrap/app.php';
