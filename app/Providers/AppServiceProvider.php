@@ -26,6 +26,8 @@ class AppServiceProvider extends ServiceProvider
 
         // Đảm bảo tìm đúng file manifest.json của Vite
         $manifestPaths = [
+            public_path('dist/.vite/manifest.json'),
+            public_path('dist/manifest.json'),
             public_path('build/.vite/manifest.json'),
             public_path('build/manifest.json')
         ];

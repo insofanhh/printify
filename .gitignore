@@ -1,6 +1,7 @@
 /.phpunit.cache
 /node_modules
 # /public/build
+# /public/dist
 /public/hot
 /public/storage
 /storage/*.key
@@ -26,3 +27,6 @@ yarn-error.log
 !/public/build/assets
 !/public/build/.vite
 !/public/build/manifest.json
+!/public/dist
+!/public/dist/.vite
+!/public/dist/manifest.json

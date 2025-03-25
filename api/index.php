@@ -31,6 +31,10 @@ if ($isVercel) {
             'gif' => 'image/gif',
             'svg' => 'image/svg+xml',
             'ico' => 'image/x-icon',
+            'woff' => 'font/woff',
+            'woff2' => 'font/woff2',
+            'ttf' => 'font/ttf',
+            'eot' => 'application/vnd.ms-fontobject',
         ];
         
         if (isset($mimeTypes[$extension])) {

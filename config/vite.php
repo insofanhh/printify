@@ -10,7 +10,7 @@ return [
     | Mặc định là public/build/manifest.json, nhưng có thể thay đổi tùy vào cấu hình.
     |
     */
-    'manifest_path' => env('VITE_MANIFEST_PATH', public_path('build/.vite/manifest.json')),
+    'manifest_path' => env('VITE_MANIFEST_PATH', public_path('dist/.vite/manifest.json')),
 
     /*
     |--------------------------------------------------------------------------

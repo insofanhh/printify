@@ -1,5 +1,6 @@
 {
     "version": 2,
+    "outputDirectory": "public",
     "functions": {
         "api/index.php": {
             "runtime": "vercel-php@0.6.0",
@@ -7,10 +8,10 @@
         }
     },
     "routes": [
-        { "src": "/build/(.*)", "dest": "/public/build/$1" },
-        { "src": "/assets/(.*)", "dest": "/public/build/assets/$1" },
-        { "src": "/(css|js|images|fonts)/(.*)", "dest": "/public/$1/$2" },
-        { "src": "/(favicon\\.ico|robots\\.txt|sitemap\\.xml)", "dest": "/public/$1" },
+        { "src": "/dist/(.*)", "dest": "/dist/$1" },
+        { "src": "/assets/(.*)", "dest": "/dist/assets/$1" },
+        { "src": "/(css|js|images|fonts)/(.*)", "dest": "/$1/$2" },
+        { "src": "/(favicon\\.ico|robots\\.txt|sitemap\\.xml)", "dest": "/$1" },
         { "src": "/(.*)", "dest": "/api/index.php" }
     ],
     "env": {

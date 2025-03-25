@@ -7,12 +7,12 @@ export default defineConfig({
         laravel({
             input: ['resources/css/app.css', 'resources/js/app.js'],
             refresh: true,
-            buildDirectory: 'build',
+            buildDirectory: 'dist',
         }),
         tailwindcss(),
     ],
     build: {
-        outDir: 'public/build',
+        outDir: 'public/dist',
         manifest: true,
         rollupOptions: {
             output: {

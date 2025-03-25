@@ -15,14 +15,19 @@
     <!-- Scripts and Styles -->
     @php
         // Kiểm tra vị trí manifest.json
-        $manifestPath = public_path('build/.vite/manifest.json');
-        if (!file_exists($manifestPath)) {
-            $manifestPath = public_path('build/manifest.json');
-        }
+        $manifestPaths = [
+            public_path('dist/.vite/manifest.json'),
+            public_path('dist/manifest.json'),
+            public_path('build/.vite/manifest.json'),
+            public_path('build/manifest.json')
+        ];
         
         // Dùng hàm này để kiểm tra và cập nhật biến môi trường VITE_MANIFEST_PATH
-        if (file_exists($manifestPath)) {
-            config(['vite.manifest_path' => $manifestPath]);
+        foreach ($manifestPaths as $path) {
+            if (file_exists($path)) {
+                config(['vite.manifest_path' => $path]);
+                break;
+            }
         }
     @endphp
     @vite(['resources/css/app.css', 'resources/js/app.js'])
