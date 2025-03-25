@@ -12,8 +12,11 @@ README.md
 /storage/logs
 /tests
 
-# Đảm bảo không bỏ qua các thư mục quan trọng
+# Không bỏ qua các thư mục quan trọng
 !/public
 !/public/build
 !/public/build/manifest.json
-!/api 
+!/api
+!/bootstrap
+!/storage/app
+!/storage/framework 

@@ -1,36 +1,23 @@
 {
     "version": 2,
-    "framework": null,
-    "outputDirectory": "public",
-    "builds": [
-        {
-            "src": "build.sh",
-            "use": "@vercel/static-build",
-            "config": {
-                "distDir": "public"
-            }
-        },
-        {
-            "src": "api/index.php",
-            "use": "vercel-php@0.6.0",
-            "config": {
-                "ini": "api/vercel-php.ini"
-            }
+    "functions": {
+        "api/index.php": {
+            "runtime": "vercel-php@0.6.0",
+            "excludeFiles": "{.git/**,node_modules/**,tests/**,storage/logs/**}"
         }
-    ],
+    },
     "routes": [
-        { "src": "/build/(.*)", "dest": "/build/$1" },
-        { "src": "/resources/(.*)", "dest": "/resources/$1" },
-        { "src": "/favicon/(.*)", "dest": "/favicon/$1" },
-        { "src": "/(css|js|assets|images|fonts)/(.*)", "dest": "/$1/$2" },
-        { "src": "/(.*)\\.(.+)", "dest": "/$1.$2" },
+        { "src": "/build/(.*)", "dest": "/public/build/$1" },
+        { "src": "/assets/(.*)", "dest": "/public/build/assets/$1" },
+        { "src": "/(css|js|images|fonts)/(.*)", "dest": "/public/$1/$2" },
+        { "src": "/(favicon\\.ico|robots\\.txt|sitemap\\.xml)", "dest": "/public/$1" },
         { "src": "/(.*)", "dest": "/api/index.php" }
     ],
     "env": {
         "APP_NAME": "Printify",
         "APP_ENV": "production",
         "APP_DEBUG": "false",
-        "APP_URL": "https://printify.vercel.app",
+        "APP_URL": "https://printify-gamma-seven.vercel.app",
         
         "APP_CONFIG_CACHE": "/tmp/config.php",
         "APP_EVENTS_CACHE": "/tmp/events.php",

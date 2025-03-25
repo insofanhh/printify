@@ -1,6 +1,6 @@
 /.phpunit.cache
 /node_modules
-/public/build
+# /public/build
 /public/hot
 /public/storage
 /storage/*.key
@@ -21,3 +21,8 @@ yarn-error.log
 /.nova
 /.vscode
 /.zed
+
+# Đảm bảo giữ lại các file quan trọng cho Vercel
+!/public/build/assets
+!/public/build/.vite
+!/public/build/manifest.json

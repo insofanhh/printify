@@ -1,26 +1,62 @@
 <?php
 
-// Đảm bảo đường dẫn cho Laravel bootstrap trên Vercel
-
-// Kiểm tra xem đang ở trên Vercel hay không
-$isVercel = isset($_ENV['VERCEL']) || isset($_SERVER['VERCEL']) || isset($_ENV['VERCEL_REGION']);
-
-// Sửa REQUEST_URI cho Vercel
-if ($isVercel) {
-    $_SERVER['SCRIPT_NAME'] = '/api/index.php';
-}
+// Thiết lập mặc định cho thông tin máy chủ
+$_SERVER['DOCUMENT_ROOT'] = __DIR__ . '/../public';
 
 // Đảm bảo header Content-Type được thiết lập đúng
 if (!headers_sent()) {
     header('Content-Type: text/html; charset=UTF-8');
 }
 
+// Kiểm tra xem đang ở trên Vercel hay không
+$isVercel = isset($_ENV['VERCEL']) || isset($_SERVER['VERCEL']) || isset($_ENV['VERCEL_REGION']);
+
+// Sửa REQUEST_URI và SCRIPT_NAME cho Vercel
+if ($isVercel) {
+    $_SERVER['SCRIPT_NAME'] = '/api/index.php';
+    
+    // Chuyển hướng request đến /public
+    $uri = urldecode(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH));
+    
+    // Nếu request là file tĩnh trong public, trả về file đó
+    if ($uri !== '/' && file_exists(__DIR__ . '/../public' . $uri)) {
+        // Xác định MIME type
+        $extension = pathinfo($uri, PATHINFO_EXTENSION);
+        $mimeTypes = [
+            'css' => 'text/css',
+            'js' => 'application/javascript',
+            'png' => 'image/png',
+            'jpg' => 'image/jpeg',
+            'jpeg' => 'image/jpeg',
+            'gif' => 'image/gif',
+            'svg' => 'image/svg+xml',
+            'ico' => 'image/x-icon',
+        ];
+        
+        if (isset($mimeTypes[$extension])) {
+            header('Content-Type: ' . $mimeTypes[$extension]);
+        }
+        
+        readfile(__DIR__ . '/../public' . $uri);
+        exit;
+    }
+    
+    // Đặt lại REQUEST_URI để đảm bảo Laravel routing hoạt động
+    $_SERVER['SCRIPT_FILENAME'] = __DIR__ . '/../public/index.php';
+}
+
 // Load composer autoloader
 require __DIR__ . '/../vendor/autoload.php';
 
-// Đảm bảo có .env file
+// Chắc chắn có file .env
 if (!file_exists(__DIR__ . '/../.env')) {
-    copy(__DIR__ . '/../.env.example', __DIR__ . '/../.env');
+    if (file_exists(__DIR__ . '/../.env.example')) {
+        copy(__DIR__ . '/../.env.example', __DIR__ . '/../.env');
+        // Tạo app key nếu chưa có
+        if (function_exists('exec')) {
+            putenv('APP_KEY=base64:'.base64_encode(random_bytes(32)));
+        }
+    }
 }
 
 // Khởi tạo application
