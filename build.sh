@@ -50,4 +50,34 @@ if [ -f "public/build/.vite/manifest.json" ] && [ ! -f "public/build/manifest.js
     cp public/build/.vite/manifest.json public/build/manifest.json
 fi
 
+# Tạo file .htaccess trong public
+echo "🔧 Tạo file .htaccess trong public..."
+cat > public/.htaccess << 'EOL'
+<IfModule mod_rewrite.c>
+    <IfModule mod_negotiation.c>
+        Options -MultiViews -Indexes
+    </IfModule>
+
+    RewriteEngine On
+
+    # Handle Authorization Header
+    RewriteCond %{HTTP:Authorization} .
+    RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
+
+    # Redirect Trailing Slashes If Not A Folder...
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_URI} (.+)/$
+    RewriteRule ^ %1 [L,R=301]
+
+    # Send Requests To Front Controller...
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteRule ^ index.php [L]
+</IfModule>
+
+<FilesMatch "\.php$">
+    SetHandler application/x-httpd-php
+</FilesMatch>
+EOL
+
 echo "✅ Build hoàn tất!" 

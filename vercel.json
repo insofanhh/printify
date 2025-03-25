@@ -12,13 +12,17 @@
         },
         {
             "src": "api/index.php",
-            "use": "vercel-php@0.6.0"
+            "use": "vercel-php@0.6.0",
+            "config": {
+                "ini": "api/vercel-php.ini"
+            }
         }
     ],
     "routes": [
         { "src": "/build/(.*)", "dest": "/build/$1" },
         { "src": "/resources/(.*)", "dest": "/resources/$1" },
         { "src": "/favicon/(.*)", "dest": "/favicon/$1" },
+        { "src": "/(css|js|assets|images|fonts)/(.*)", "dest": "/$1/$2" },
         { "src": "/(.*)\\.(.+)", "dest": "/$1.$2" },
         { "src": "/(.*)", "dest": "/api/index.php" }
     ],

@@ -1,0 +1,14 @@
+RewriteEngine On
+RewriteRule ^$ index.php [L]
+RewriteRule ^(.*)$ index.php [L]
+
+AddType application/x-httpd-php .php
+AddHandler application/x-httpd-php .php
+
+<FilesMatch "\.php$">
+    SetHandler application/x-httpd-php
+</FilesMatch>
+
+<IfModule mod_mime.c>
+    AddType text/html .php
+</IfModule> 
