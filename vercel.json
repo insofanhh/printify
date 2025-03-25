@@ -1,18 +1,28 @@
 {
     "version": 2,
-    "outputDirectory": "public",
-    "functions": {
-        "api/index.php": {
-            "runtime": "vercel-php@0.6.0",
-            "excludeFiles": "{.git/**,node_modules/**,tests/**,storage/logs/**}"
+    "builds": [
+        {
+            "src": "api/index.php",
+            "use": "vercel-php@0.6.0"
         }
-    },
+    ],
     "routes": [
-        { "src": "/dist/(.*)", "dest": "/dist/$1" },
-        { "src": "/assets/(.*)", "dest": "/dist/assets/$1" },
-        { "src": "/(css|js|images|fonts)/(.*)", "dest": "/$1/$2" },
-        { "src": "/(favicon\\.ico|robots\\.txt|sitemap\\.xml)", "dest": "/$1" },
-        { "src": "/(.*)", "dest": "/api/index.php" }
+        {
+            "src": "/(css|js|assets|img|fonts|favicon.ico|robots.txt)/(.*)",
+            "dest": "/public/$1/$2"
+        },
+        {
+            "src": "/dist/(.*)",
+            "dest": "/public/dist/$1"
+        },
+        {
+            "src": "/build/(.*)",
+            "dest": "/public/build/$1"
+        },
+        {
+            "src": "/(.*)",
+            "dest": "/api/index.php"
+        }
     ],
     "env": {
         "APP_NAME": "Printify",

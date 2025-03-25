@@ -3,10 +3,8 @@
 // Thiết lập mặc định cho thông tin máy chủ
 $_SERVER['DOCUMENT_ROOT'] = __DIR__ . '/../public';
 
-// Đảm bảo header Content-Type được thiết lập đúng
-if (!headers_sent()) {
-    header('Content-Type: text/html; charset=UTF-8');
-}
+// Thiết lập Content-Type mặc định
+header('Content-Type: text/html; charset=UTF-8');
 
 // Kiểm tra xem đang ở trên Vercel hay không
 $isVercel = isset($_ENV['VERCEL']) || isset($_SERVER['VERCEL']) || isset($_ENV['VERCEL_REGION']);
@@ -15,7 +13,7 @@ $isVercel = isset($_ENV['VERCEL']) || isset($_SERVER['VERCEL']) || isset($_ENV['
 if ($isVercel) {
     $_SERVER['SCRIPT_NAME'] = '/api/index.php';
     
-    // Chuyển hướng request đến /public
+    // Chuyển hướng request đến /public 
     $uri = urldecode(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH));
     
     // Nếu request là file tĩnh trong public, trả về file đó
@@ -49,19 +47,11 @@ if ($isVercel) {
     $_SERVER['SCRIPT_FILENAME'] = __DIR__ . '/../public/index.php';
 }
 
+// Đảm bảo APP_KEY nếu cần
+putenv('APP_KEY=base64:'.base64_encode(random_bytes(32)));
+
 // Load composer autoloader
 require __DIR__ . '/../vendor/autoload.php';
-
-// Chắc chắn có file .env
-if (!file_exists(__DIR__ . '/../.env')) {
-    if (file_exists(__DIR__ . '/../.env.example')) {
-        copy(__DIR__ . '/../.env.example', __DIR__ . '/../.env');
-        // Tạo app key nếu chưa có
-        if (function_exists('exec')) {
-            putenv('APP_KEY=base64:'.base64_encode(random_bytes(32)));
-        }
-    }
-}
 
 // Khởi tạo application
 $app = require_once __DIR__ . '/../bootstrap/app.php';
