@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{ config('app.name', 'Printify') }}</title>
+    <title>{{ $title ?? config('app.name') }}</title>
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -13,6 +13,18 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
     <!-- Scripts and Styles -->
+    @php
+        // Kiểm tra vị trí manifest.json
+        $manifestPath = public_path('build/.vite/manifest.json');
+        if (!file_exists($manifestPath)) {
+            $manifestPath = public_path('build/manifest.json');
+        }
+        
+        // Dùng hàm này để kiểm tra và cập nhật biến môi trường VITE_MANIFEST_PATH
+        if (file_exists($manifestPath)) {
+            config(['vite.manifest_path' => $manifestPath]);
+        }
+    @endphp
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     
     <!-- Livewire Styles -->
